@@ -4,29 +4,32 @@ import time
 
 print_lock = threading.Lock()
 
-def exJob(worker):
-	time.sleep(0.5)
 
-	with print_lock:
-		print(threading.current_thread().name, worker)
+def exJob(worker):
+    time.sleep(0.5)
+
+    with print_lock:
+        print(threading.current_thread().name, worker)
+
 
 def threader():
-	while True:
-		worker = q.get()
-		exJob(worker)
-		q.task_done()
+    while True:
+        worker = q.get()
+        exJob(worker)
+        q.task_done()
+
 
 q = Queue()
 
 for x in range(10):
-	t = threading.Thread(target = threader)
-	t.daemon =True
-	t.start()
+    t = threading.Thread(target=threader)
+    t.daemon = True
+    t.start()
 
 start = time.time()
 
 for worker in range(20):
-	q.put(worker)
+    q.put(worker)
 
 q.join()
 

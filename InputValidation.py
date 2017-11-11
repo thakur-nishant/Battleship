@@ -1,7 +1,9 @@
-import sqlite3
-from sqlite3 import Error
-import re,sys
 import argparse
+import re
+import sqlite3
+import sys
+from sqlite3 import Error
+
 
 def check_name(name_string):
     test_name = name_regex_pattern.match(name_string)
@@ -30,14 +32,16 @@ def create_connection():
 
     return None
 
-#function to add members to the Database
+
+# function to add members to the Database
 def add_member(conn, name, phone):
     query = "INSERT INTO members (name, phone) VALUES (?,?);"
     cur = conn.cursor()
-    cur.execute("INSERT INTO members (name, phone) VALUES (?,?);",(name,phone))
+    cur.execute("INSERT INTO members (name, phone) VALUES (?,?);", (name, phone))
     conn.commit()
 
-#function to list all the members in the database
+
+# function to list all the members in the database
 def list_members(conn):
     cur = conn.cursor()
     cur.execute("SELECT name,phone FROM members;")
@@ -46,7 +50,8 @@ def list_members(conn):
     for row in rows:
         print(row)
 
-#function to delete a member from the database
+
+# function to delete a member from the database
 def delete_member(conn, value):
     cur = conn.cursor()
     cur.execute("SELECT name,phone FROM members WHERE name = '" + value + "' OR phone = '" + value + "';")
@@ -58,23 +63,23 @@ def delete_member(conn, value):
     else:
         sys.stderr.write("Entry not available in database!")
 
-#function to check the input command
-def regex_check():
 
+# function to check the input command
+def regex_check():
     usage_message = 'InputValidation.py command\nCommands:\n' \
                     'ADD "<person>" "<phone #>",\nDEL "<person>",\n' \
                     'DEL "<phone #>", \nLIST'
 
     help_message = 'ADD "<person>" "<phone #>",\nDEL "<person>",\n' \
-                    'DEL "<phone #>", \nLIST'
+                   'DEL "<phone #>", \nLIST'
 
-    #parse the command entered by the user
-    parser = argparse.ArgumentParser(usage = usage_message,description='Process some commands.')
+    # parse the command entered by the user
+    parser = argparse.ArgumentParser(usage=usage_message, description='Process some commands.')
     parser.add_argument('command', nargs='+', help=help_message)
     args = parser.parse_args()
     user_input = (args.command)
 
-    #connect to the database
+    # connect to the database
     conn = create_connection()
     if conn is not None:
         if user_input[0] == "LIST" and len(user_input) == 1:
@@ -84,7 +89,7 @@ def regex_check():
             value = str(user_input[1])
             test_name = check_name(value)
             test_phone = check_phone(value)
-            if(test_name or test_phone):
+            if test_name or test_phone:
                 delete_member(conn, value)
             else:
                 sys.exit(1)
@@ -110,7 +115,7 @@ def regex_check():
 
 
 if __name__ == '__main__':
-    #path to Database file
+    # path to Database file
     db_path = 'C:\sqlite\members.db'
 
     # regular expression for validating name
@@ -118,7 +123,8 @@ if __name__ == '__main__':
     name_regex_pattern = re.compile(name_regex_string)
 
     # regular expression for validating phone#
-    phone_number_regex_string = "(^\\d{5}$)|(^\\d{5}\\.\\d{5}$)|(^\\+[1-9]{1,2}[ ]?\\(|^[1][ ]?\\(|^[0][1][1][ ][1]?[ ]?\\(?|^\\(?)([1-9]\\d{1,2})?\\)?[- ]?(\\d{3})[-| ](\\d{4})$";
+    phone_number_regex_string = "(^\\d{5}$)|(^\\d{5}\\.\\d{5}$)|(^\\+[1-9]{1,2}[ ]?\\(|^[1][ ]?\\(|^[0][1][1][ ][1]?[ " \
+                                "]?\\(?|^\\(?)([1-9]\\d{1,2})?\\)?[- ]?(\\d{3})[-| ](\\d{4})$";
     phone_number_regex_pattern = re.compile(phone_number_regex_string)
 
     regex_check()

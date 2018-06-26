@@ -32,8 +32,7 @@ def solution(n):
     return  result
 
 
-
-n = 72
+n = 60
 x = solution(n)
 print(x)
 

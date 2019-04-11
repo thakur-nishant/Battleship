@@ -6,7 +6,7 @@ def string_permutation(s):
     s = sorted(s)
     result = []
     for i in range(len(s)):
-        helper([s[i]] , s[:i]+s[i+1:], result)
+        helper([s[i]], s[:i]+s[i+1:], result)
 
     return result
 
@@ -29,6 +29,6 @@ def helper(pre ,s, result):
         helper(pre+[s[i]], s[:i] + s[i + 1:], result)
 
 
-s = "AABC"
+s = "1234"
 test = string_permutation(s)
 print(len(test),test)
